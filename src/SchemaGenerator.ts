@@ -19,12 +19,12 @@ export class SchemaGenerator {
     ) {
     }
 
-    public createSchema(fullName: string): Schema {
+    public createSchema(fullName: string, $id: string): Schema {
         const rootNode = this.findRootNode(fullName);
         const rootType = this.nodeParser.createType(rootNode, new Context());
 
         return {
-            $schema: "http://json-schema.org/draft-06/schema#",
+            $id,
             definitions: this.getRootChildDefinitions(rootType),
             ...this.getRootTypeDefinition(rootType),
         };
