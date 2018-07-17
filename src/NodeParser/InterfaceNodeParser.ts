@@ -65,14 +65,15 @@ export class InterfaceNodeParser implements SubNodeParser {
                 return result;
             }, []);
     }
-    private getAdditionalProperties(node: ts.InterfaceDeclaration, context: Context): BaseType | false {
-        const property = node.members.find((it) => it.kind === ts.SyntaxKind.IndexSignature);
-        if (!property) {
-            return false;
-        }
+    private getAdditionalProperties(node: ts.InterfaceDeclaration, context: Context) {
+        // const property = node.members.find((it) => it.kind === ts.SyntaxKind.IndexSignature);
+        // if (!property) {
+        //     return false;
+        // }
 
-        const signature = property as ts.IndexSignatureDeclaration;
-        return this.childNodeParser.createType(signature.type!, context);
+        // const signature = property as ts.IndexSignatureDeclaration;
+        // return this.childNodeParser.createType(signature.type!, context);
+        return true
     }
 
     private getTypeId(node: ts.Node, context: Context): string {
