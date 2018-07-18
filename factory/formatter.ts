@@ -22,9 +22,7 @@ import { TupleTypeFormatter } from "../src/TypeFormatter/TupleTypeFormatter";
 import { UndefinedTypeFormatter } from "../src/TypeFormatter/UndefinedTypeFormatter";
 import { UnionTypeFormatter } from "../src/TypeFormatter/UnionTypeFormatter";
 
-
-
-export function createFormatter(config: Config): TypeFormatter {
+export function createFormatter(config: Config, externalRefList:string[]): TypeFormatter {
     const chainTypeFormatter = new ChainTypeFormatter([]);
     const circularReferenceTypeFormatter = new CircularReferenceTypeFormatter(chainTypeFormatter);
 
@@ -42,8 +40,8 @@ export function createFormatter(config: Config): TypeFormatter {
         .addTypeFormatter(new LiteralTypeFormatter())
         .addTypeFormatter(new EnumTypeFormatter())
 
-        .addTypeFormatter(new ReferenceTypeFormatter(circularReferenceTypeFormatter))
-        .addTypeFormatter(new DefinitionTypeFormatter(circularReferenceTypeFormatter))
+        .addTypeFormatter(new ReferenceTypeFormatter(circularReferenceTypeFormatter, externalRefList))
+        .addTypeFormatter(new DefinitionTypeFormatter(circularReferenceTypeFormatter, externalRefList))
         .addTypeFormatter(new ObjectTypeFormatter(circularReferenceTypeFormatter))
         .addTypeFormatter(new AliasTypeFormatter(circularReferenceTypeFormatter))
 

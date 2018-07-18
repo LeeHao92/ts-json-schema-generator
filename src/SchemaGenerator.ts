@@ -19,15 +19,52 @@ export class SchemaGenerator {
     ) {
     }
 
-    public createSchema(fullName: string, $id: string): Schema {
+    public createSchema(fullName: string, $id: string, externalRefList:string[]): Schema {
         const rootNode = this.findRootNode(fullName);
         const rootType = this.nodeParser.createType(rootNode, new Context());
 
-        return {
+        const data = {
             $id,
-            definitions: this.getRootChildDefinitions(rootType),
+            definitions: this.getRootChildDefinitions(rootType,externalRefList),
             ...this.getRootTypeDefinition(rootType),
-        };
+        }
+
+        this.removeUselessDefinitions(data)
+
+        return data
+    }
+
+    private removeUselessDefinitions(data:any){
+        const refList = this.getRefList(data)
+
+        Object.keys(data.definitions).forEach((key:string)=>{
+            if(refList.indexOf(key) < 0){
+                delete data.definitions[key]
+                this.removeUselessDefinitions(data)
+            }
+        })
+    }
+
+    private getRefList(jsonSchema: Schema) {
+        const list:string[] = []
+
+        function getJsonSchemaRefs(data: any) {
+            Object.keys(data).forEach((key: string) => {
+                if (typeof data[key] === "object") {
+                    getJsonSchemaRefs(data[key])
+                }
+                if (key === "$ref") {
+                    const refName = data[key].replace('#/definitions/', '')
+                    if(list.indexOf(refName) < 0) {
+                        list.push(refName)
+                    }
+                }
+            })
+        }
+
+        getJsonSchemaRefs(jsonSchema)
+
+        return list
     }
 
     private findRootNode(fullName: string): ts.Node {
@@ -83,9 +120,11 @@ export class SchemaGenerator {
     private getRootTypeDefinition(rootType: BaseType): Definition {
         return this.typeFormatter.getDefinition(rootType);
     }
-    private getRootChildDefinitions(rootType: BaseType): StringMap<Definition> {
+    private getRootChildDefinitions(rootType: BaseType,externalRefList:string[]): StringMap<Definition> {
         return this.typeFormatter.getChildren(rootType)
-            .filter((child) => child instanceof DefinitionType)
+            .filter((child) => {
+                return child instanceof DefinitionType && externalRefList.indexOf(child.getId()) < 0
+            })
             .reduce((result: StringMap<Definition>, child: DefinitionType) => ({
                 ...result,
                 [child.getId()]: this.typeFormatter.getDefinition(child.getType()),

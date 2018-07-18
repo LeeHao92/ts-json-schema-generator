@@ -46,7 +46,7 @@ export function createParser(program: ts.Program, config: Config): NodeParser {
         return new ExposeNodeParser(typeChecker, nodeParser, config.expose);
     }
     function withTopRef(nodeParser: NodeParser): NodeParser {
-        return new TopRefNodeParser(chainNodeParser, config.type, config.topRef);
+        return new TopRefNodeParser(chainNodeParser, config.topRef);
     }
     function withJsDoc(nodeParser: SubNodeParser): SubNodeParser {
         if (config.jsDoc === "extended") {

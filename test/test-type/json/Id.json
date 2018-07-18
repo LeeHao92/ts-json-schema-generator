@@ -1,0 +1,1 @@
+{"$id":"http://dp/schemas/Id.json","definitions":{"MyString":{"type":"string"}},"anyOf":[{"type":"number"},{"$ref":"#/definitions/MyString"}]}

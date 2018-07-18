@@ -8,14 +8,22 @@ import { TypeFormatter } from "../TypeFormatter";
 export class ReferenceTypeFormatter implements SubTypeFormatter {
     public constructor(
         private childTypeFormatter: TypeFormatter,
+        private externalRefList: string[],
     ) {
+    }
+
+    private getDefinitionRefName(id:string) {
+        const isExternalRef = this.externalRefList.some((item:string)=>{
+            return item === id
+        })
+        return isExternalRef ? `${id}.json` : `#/definitions/${id}`
     }
 
     public supportsType(type: ReferenceType): boolean {
         return type instanceof ReferenceType;
     }
     public getDefinition(type: ReferenceType): Definition {
-        return {$ref: "#/definitions/" + type.getId()};
+        return {$ref: this.getDefinitionRefName(type.getId())};
     }
     public getChildren(type: ReferenceType): BaseType[] {
         if (type.getType() instanceof DefinitionType) {

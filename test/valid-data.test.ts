@@ -1,50 +1,22 @@
-import * as Ajv from "ajv";
-import { assert } from "chai";
-import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import * as ts from "typescript";
-import { createFormatter } from "../factory/formatter";
-import { createParser } from "../factory/parser";
-import { createProgram } from "../factory/program";
-import { Config } from "../src/Config";
-import { SchemaGenerator } from "../src/SchemaGenerator";
-
-const validator = new Ajv();
-const metaSchema: object = require("ajv/lib/refs/json-schema-draft-06.json");
-validator.addMetaSchema(metaSchema);
-
-const basePath = "test/valid-data";
-
-export type Run = (
-    expectation: string,
-    callback?: ((this: Mocha.ITestCallbackContext, done: MochaDone) => any) | undefined,
-) => Mocha.ITest;
-
-function assertSchema(name: string, type: string, only: boolean = false): void {
-    const run: Run = only ? it.only : it;
-    run(name, () => {
-        const config: Config = {
-            path: resolve(`${basePath}/${name}/*.ts`),
-            type: type,
-
-            expose: "export",
-            topRef: true,
-            jsDoc: "none",
-        };
-
-        const program: ts.Program = createProgram(config);
-        const generator: SchemaGenerator = new SchemaGenerator(
-            program,
-            createParser(program, config),
-            createFormatter(config),
-        );
-
-        const schema = generator.createSchema(type);
-
-
-    });
-}
+import {
+    createJsonSchemaFile,
+    CreateJsonSchemaConfig
+} from "../src/CreateJsonSchemaFile";
 
 describe("valid-data", () => {
-    assertSchema("simple-object", "SimpleObject");
+    it("demo", () => {
+        const config: CreateJsonSchemaConfig = {
+            path: resolve(`test/test-type/*.ts`), // 配置文件
+            expose: "all", // Create shared $ref definitions for all types.
+            topRef: false, // 是否包裹根节点
+            jsDoc: "none",
+            idPrefix: "http://dp/schemas", // 生成 json schema $id 前缀
+            externalRefList: ["Id", "Name"], // 外部引入 ref
+            validTypeList: ["User"], // 校验的类型
+            writeDirPath: resolve("test/test-type/json") // 写入 dir
+        };
+
+        createJsonSchemaFile(config);
+    });
 });

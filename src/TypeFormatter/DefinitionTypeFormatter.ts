@@ -7,14 +7,22 @@ import { TypeFormatter } from "../TypeFormatter";
 export class DefinitionTypeFormatter implements SubTypeFormatter {
     public constructor(
         private childTypeFormatter: TypeFormatter,
+        private externalRefList: string[],
     ) {
+    }
+
+    private getDefinitionRefName(id:string) {
+        const isExternalRef = this.externalRefList.some((item:string)=>{
+            return item === id
+        })
+        return isExternalRef ? `${id}.json` : `#/definitions/${id}`
     }
 
     public supportsType(type: DefinitionType): boolean {
         return type instanceof DefinitionType;
     }
     public getDefinition(type: DefinitionType): Definition {
-        return {$ref: "#/definitions/" + type.getId()};
+        return {$ref: this.getDefinitionRefName(type.getId())};
     }
     public getChildren(type: DefinitionType): BaseType[] {
         return [

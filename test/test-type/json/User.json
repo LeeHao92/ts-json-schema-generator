@@ -1,0 +1,10 @@
+{
+    "$id": "http://dp/schemas/User.json",
+    "definitions": {},
+    "type": "object",
+    "properties": {
+        "id": { "$ref": "Id.json" },
+        "name": { "$ref": "Name.json" }
+    },
+    "required": ["id", "name"]
+}

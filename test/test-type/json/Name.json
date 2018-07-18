@@ -1,0 +1,1 @@
+{"$id":"http://dp/schemas/Name.json","definitions":{"MyString":{"type":"string"}},"type":"object","properties":{"firstName":{"$ref":"#/definitions/MyString"}},"required":["firstName"]}
