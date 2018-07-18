@@ -1,6 +1,6 @@
 {
-  "name": "create-json-schema",
-  "version": "0.0.1-f",
+  "name": "create-json-schema-file",
+  "version": "0.0.1-beta.1",
   "description": "Generate JSON schema from your Typescript sources",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
