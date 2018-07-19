@@ -18,7 +18,7 @@ export class IntersectionTypeFormatter implements SubTypeFormatter {
     public getDefinition(type: IntersectionType): Definition {
         return type.getTypes().reduce(
             getAllOfDefinitionReducer(this.childTypeFormatter),
-            {type: "object", additionalProperties: false} as Definition);
+            {type: "object", additionalProperties: true} as Definition);
     }
     public getChildren(type: IntersectionType): BaseType[] {
         return type.getTypes().reduce((result: BaseType[], item) => {

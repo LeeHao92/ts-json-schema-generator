@@ -18,7 +18,7 @@ export interface Definition {
     };
     enum?: (RawType | Definition)[];
     default?: RawType | Object;
-    additionalProperties?: false | Definition;
+    additionalProperties?: boolean | Definition;
     required?: string[];
     propertyOrder?: string[];
     properties?: DefinitionMap;

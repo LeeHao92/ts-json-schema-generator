@@ -88,7 +88,7 @@ export function getAllOfDefinitionReducer(childTypeFormatter: TypeFormatter) {
                     definition.additionalProperties = additionalProps[0];
                 }
             } else {
-                definition.additionalProperties = false;
+                definition.additionalProperties = true;
             }
         }
 
